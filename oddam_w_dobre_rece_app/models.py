@@ -20,7 +20,7 @@ class Institution(models.Model):
     # 1 Model Institution
     """
     name = models.CharField(max_length=64)
-    description = models.TextField
+    description = models.TextField(null=True)
     TYPE_CHOICES = [
         ('1', 'fundacja'),
         ('2', 'organizacja pozarządowa'),
@@ -41,10 +41,10 @@ class Donation(models.Model):
     categories = models.ManyToManyField(Category)
     institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
     adress = models.CharField(max_length=64)
-    phone_number = models.IntegerField
+    phone_number = models.IntegerField(default=0)
     city = models.CharField(max_length=64)
     zip_code = models.CharField(max_length=64)
-    pick_up_date = models.DateField
-    pick_up_time = models.TimeField
-    pick_up_comment = models.TextField
+    pick_up_date = models.DateField(null=True)
+    pick_up_time = models.TimeField(null=True)
+    pick_up_comment = models.TextField(null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
