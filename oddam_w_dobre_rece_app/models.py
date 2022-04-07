@@ -40,7 +40,7 @@ class Donation(models.Model):
     quantity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     categories = models.ManyToManyField(Category)
     institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
-    adress = models.CharField(max_length=64)
+    address = models.CharField(max_length=64)
     phone_number = models.IntegerField(default=0)
     city = models.CharField(max_length=64)
     zip_code = models.CharField(max_length=64)

@@ -58,6 +58,37 @@ class AddDonationView(LoginRequiredMixin, View):
         return render(request, 'oddam_w_dobre_rece_app/form.html', {'category': category, 'institution': institution})
 
 
+class FormConfirmationView(LoginRequiredMixin, View):
+    """
+    Widok FormConfirmation
+    """
+    def post(self, request):
+        quantity = request.POST['bags']
+        categories = request.POST.getlist('categories')
+        institution = request.POST['organization']
+        address = request.POST['address']
+        phone_number = request.POST['phone']
+        city = request.POST['city']
+        zip_code = request.POST['postcode']
+        pick_up_date = request.POST['data']
+        pick_up_time = request.POST['time']
+        pick_up_comment = request.POST['more_info']
+        donation = Donation.objects.create(
+            quantity=quantity,
+            institution=Institution.objects.get(id=institution),
+            address=address,
+            phone_number=phone_number,
+            city=city,
+            zip_code=zip_code,
+            pick_up_date=pick_up_date,
+            pick_up_time=pick_up_time,
+            pick_up_comment=pick_up_comment,
+            user=request.user
+        )
+        donation.categories.set(categories)
+        return render(request, 'oddam_w_dobre_rece_app/form-confirmation.html')
+
+
 class LoginView(View):
     """
     Widok Login
@@ -139,7 +170,8 @@ class UserView(LoginRequiredMixin, View):
     """
     def get(self, request):
         user = request.user
-        return render(request, 'oddam_w_dobre_rece_app/user.html', {'user': user})
+        donations = Donation.objects.filter(user=request.user)
+        return render(request, 'oddam_w_dobre_rece_app/user.html', {'user': user, 'donations': donations})
 
 
 def get_institution_by_category(request):

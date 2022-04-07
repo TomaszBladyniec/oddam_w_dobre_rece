@@ -243,7 +243,7 @@ document.addEventListener("DOMContentLoaded", function() {
      * TODO: validation, send data to server
      */
     submit(e) {
-      e.preventDefault();
+      // e.preventDefault();
       this.currentStep++;
       this.updateForm();
     }
@@ -252,6 +252,32 @@ document.addEventListener("DOMContentLoaded", function() {
   if (form !== null) {
     new FormSteps(form);
   }
+
+let button1 = document.getElementsByName('button1')[0];
+  button1.addEventListener('click', function() {
+  let bags = document.getElementsByName('bags')[0].value;
+  document.getElementsByName('bags_summary')[0].innerText = 'Worki ubrań w dobrym stanie dla dzieci w ilości ' + bags + ' sztuk';
+  let organization1 = document.querySelector('input[name="organization"]:checked').parentElement;
+  let organization2 = organization1.getElementsByClassName("description")[0];
+  let organization3 = organization2.getElementsByClassName("title")[0].innerHTML;
+  document.getElementsByName('organization_summary')[0].innerText = 'Dla organizacji ' + organization3;
+  let address = document.getElementsByName("address")[0].value;
+  document.getElementsByName('address_summary')[0].innerText = address;
+  let city = document.getElementsByName("city")[0].value;
+  document.getElementsByName('city_summary')[0].innerText = city;
+  let postcode = document.getElementsByName("postcode")[0].value;
+  document.getElementsByName('postcode_summary')[0].innerText = postcode;
+  let phone = document.getElementsByName("phone")[0].value;
+  document.getElementsByName('phone_summary')[0].innerText = phone;
+  let data = document.getElementsByName("data")[0].value;
+  document.getElementsByName('data_summary')[0].innerText = data;
+  let time = document.getElementsByName("time")[0].value;
+  document.getElementsByName('time_summary')[0].innerText = time;
+  let more_info = document.getElementsByName("more_info")[0].value;
+  document.getElementsByName('more_info_summary')[0].innerText = more_info;
+  })
+
+
 });
 
 function show_id(event)

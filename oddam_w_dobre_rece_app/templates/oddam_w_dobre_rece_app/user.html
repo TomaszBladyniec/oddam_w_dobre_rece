@@ -14,5 +14,10 @@
         <button class="btn" type="submit">Zapisz zmiany</button>
       </div>
     </form>
+    <h2>Przekazane dary</h2>
+    {% for don in donations %}
+    <li>Liczba przekazanych worków: {{ don.quantity }}<br> Obdarowana organizacja: {{don.institution}}<br>
+      Kategorie darów: {% for cat in don.categories.all %}{{cat.name}}{% endfor %}<br>Termin odbioru {{don.pick_up_date}} o godzinie {{don.pick_up_time}}</li>
+    {% endfor %}
   </section>
 {% endblock %}
