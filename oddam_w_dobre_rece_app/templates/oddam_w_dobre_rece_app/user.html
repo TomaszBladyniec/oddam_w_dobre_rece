@@ -14,10 +14,30 @@
         <button class="btn" type="submit">Zapisz zmiany</button>
       </div>
     </form>
-    <h2>Przekazane dary</h2>
-    {% for don in donations %}
+    <h2>Przekazane dary użytkownika {{ user }}</h2>
+    <h3>Dary nieodebrane:</h3>
+
+    {% for don in donations1 %}
+    <form method="post">
+      {% csrf_token %}
     <li>Liczba przekazanych worków: {{ don.quantity }}<br> Obdarowana organizacja: {{don.institution}}<br>
-      Kategorie darów: {% for cat in don.categories.all %}{{cat.name}}{% endfor %}<br>Termin odbioru {{don.pick_up_date}} o godzinie {{don.pick_up_time}}</li>
+      Kategorie darów: {% for cat in don.categories.all %}{{cat.name}}, {% endfor %}<br>Termin odbioru: {{don.pick_up_date}} o godzinie {{don.pick_up_time}}<br>
+      <button type="submit" name="is_taken" value="{{ don.id }}">Odebrany</button>
+    </li>
     {% endfor %}
+    </form>
+
+        <h3>Dary odebrane:</h3>
+
+    {% for don in donations2 %}
+    <li>Liczba przekazanych worków: {{ don.quantity }}<br> Obdarowana organizacja: {{don.institution}}<br>
+      Kategorie darów: {% for cat in don.categories.all %}{{cat.name}}, {% endfor %}<br>Odebrane: {{don.pick_up_date}} o godzinie {{don.pick_up_time}}<br>
+    </li>
+    {% endfor %}<br>
+
+    <input type="submit" value=Zatwierdź>
+
   </section>
+
 {% endblock %}
+

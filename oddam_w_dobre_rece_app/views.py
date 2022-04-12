@@ -1,4 +1,7 @@
-from .forms import LoginForm, RegisterForm
+from .forms import MyUserCreation, LoginForm, RegisterForm
+from .models import Category, Donation, Institution
+from .tokens import account_activation_token
+from datetime import datetime
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
@@ -11,9 +14,6 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
 from django.template.loader import render_to_string
-from .models import Category, Donation, Institution
-from .forms import MyUserCreation
-from .tokens import account_activation_token
 import re
 
 # Create your views here.
@@ -170,8 +170,18 @@ class UserView(LoginRequiredMixin, View):
     """
     def get(self, request):
         user = request.user
-        donations = Donation.objects.filter(user=request.user)
-        return render(request, 'oddam_w_dobre_rece_app/user.html', {'user': user, 'donations': donations})
+        donations1 = Donation.objects.filter(user=request.user, is_taken=False).order_by('pick_up_date', 'pick_up_time')
+        donations2 = Donation.objects.filter(user=request.user, is_taken=True).order_by('pick_up_date', 'pick_up_time')
+        return render(request, 'oddam_w_dobre_rece_app/user.html', {'user': user, 'donations1': donations1, 'donations2': donations2})
+    def post(self, request):
+        don = request.POST.get('is_taken')
+        donItem = Donation.objects.get(id=don)
+        if not donItem.is_taken:
+            donItem.is_taken = True
+            donItem.pick_up_date = datetime.now()
+            donItem.pick_up_time = datetime.now().time()
+            donItem.save()
+            return redirect('user')
 
 
 def get_institution_by_category(request):
@@ -198,3 +208,48 @@ def activate(request, uidb64, token):
         return HttpResponse('Dziękuję za potwierdzenie. Teraz możesz się zalogować.')
     else:
         return HttpResponse('Kod aktywacyjny jest niepoprawny!')
+
+
+class EditUserView(LoginRequiredMixin, View):
+    """
+    Widok EditUser
+    """
+    def get(self, request):
+        user = request.user
+        return render(request, 'oddam_w_dobre_rece_app/edit-user.html', {'user': user})
+
+    def post(self, request):
+        user = request.user
+        username = request.POST['email']
+        first_name = request.POST['fname']
+        last_name = request.POST['lname']
+        email = request.POST['email']
+        password = request.POST['password']
+        auth = authenticate(username=user.username, password=password)
+        if auth is not None:
+            user.username = username
+            user.first_name = first_name
+            user.last_name = last_name
+            user.email = email
+            user.save()
+        return redirect('/edit-user/')
+
+
+class EditPasswordView(LoginRequiredMixin, View):
+    """
+    Widok EditPassword
+    """
+    def get(self, request):
+        user = request.user
+        return render(request, 'oddam_w_dobre_rece_app/edit-password.html', {'user': user})
+
+    def post(self, request):
+        user = request.user
+        old_password = request.POST['old_password']
+        new_password1 = request.POST['new_password1']
+        new_password2 = request.POST['new_password2']
+        auth = authenticate(username=user.username, password=old_password)
+        if auth is not None and new_password1 == new_password2:
+            user.set_password(new_password1)
+            user.save()
+        return redirect('/edit-password/')

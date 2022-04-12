@@ -17,7 +17,7 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path
 from oddam_w_dobre_rece_app.views import LandingPageView, AddDonationView, LoginView, RegisterView, LogoutView,\
-    UserView, get_institution_by_category, activate, FormConfirmationView
+    UserView, get_institution_by_category, activate, FormConfirmationView, EditUserView, EditPasswordView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +28,8 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('register/', RegisterView.as_view(), name='register'),
     path('user/', UserView.as_view(), name='user'),
+    path('edit-user/', EditUserView.as_view(), name='edit-user'),
+    path('edit-password/', EditPasswordView.as_view(), name='edit-password'),
     path('get_institution_by_category/', get_institution_by_category, name='get_institution_by_category'),
     url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         activate, name='activate'),
